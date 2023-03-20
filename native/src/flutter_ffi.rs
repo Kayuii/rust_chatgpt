@@ -2,6 +2,9 @@
 // When adding new code to your project, note that only items used
 // here will be transformed to their Dart equivalents.
 
+use crate::{flutter, ResultType};
+use flutter_rust_bridge::StreamSink;
+
 // A plain enum without any fields. This is similar to Dart- or C-style enums.
 // flutter_rust_bridge is capable of generating code for enums with fields
 // (@freezed classes in Dart and tagged unions in C).
@@ -56,4 +59,29 @@ pub fn platform() -> Platform {
 // and they are automatically converted to camelCase on the Dart side.
 pub fn rust_release_mode() -> bool {
     cfg!(not(debug_assertions))
+}
+
+pub fn start_global_event_stream(s: StreamSink<String>, app_type: String) -> ResultType<()> {
+    if let Some(_) = flutter::GLOBAL_EVENT_STREAM
+        .write()
+        .unwrap()
+        .insert(app_type.clone(), s)
+    {
+        log::warn!(
+            "Global event stream of type {} is started before, but now removed",
+            app_type
+        );
+    }
+    Ok(())
+}
+
+pub fn stop_global_event_stream(app_type: String) {
+    let _ = flutter::GLOBAL_EVENT_STREAM
+        .write()
+        .unwrap()
+        .remove(&app_type);
+}
+
+pub fn get_helleworld() -> String {
+    "hello world".to_string()
 }

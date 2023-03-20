@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'ffi.dart' if (dart.library.html) 'ffi_web.dart';
+import 'package:rust_chatgpt/consts.dart';
+import 'package:rust_chatgpt/models/platform_model.dart';
+import 'bridge_definitions.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initEnv(kAppTypeMain);
   runApp(const MyApp());
+}
+
+Future<void> initEnv(String appType) async {
+  // global shared preference
+  await platformFFI.init(appType);
 }
 
 class MyApp extends StatelessWidget {
@@ -54,11 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
   late Future<Platform> platform;
   late Future<bool> isRelease;
 
+  late Future<String> test;
+
   @override
   void initState() {
     super.initState();
-    platform = api.platform();
-    isRelease = api.rustReleaseMode();
+    platform = platformFFI.platform();
+    isRelease = platformFFI.rustReleaseMode();
+    test = platformFFI.getHelleworld();
   }
 
   @override
@@ -95,6 +107,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text("You're running on"),
+            FutureBuilder<List<dynamic>>(
+                future: Future.wait([test]),
+                builder: (context, snap) {
+                  final data = snap.data;
+                  if (data == null) {
+                    return const Text("Loading");
+                  }
+
+                  return Text('${data[0]}');
+                }),
             // To render the results of a Future, a FutureBuilder is used which
             // turns a Future into an AsyncSnapshot, which can be used to
             // extract the error state, the loading state and the data if
@@ -108,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // List<dynamic>.
               future: Future.wait([platform, isRelease]),
               builder: (context, snap) {
-                final style = Theme.of(context).textTheme.headline4;
+                final style = Theme.of(context).textTheme.headlineMedium;
                 if (snap.error != null) {
                   // An error has been encountered, so give an appropriate response and
                   // pass the error details to an unobstructive tooltip.

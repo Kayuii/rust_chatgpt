@@ -3,12 +3,14 @@ default: gen lint
 gen:
     flutter pub get
     flutter_rust_bridge_codegen \
-        --rust-input native/src/api.rs \
+        --rust-input native/src/flutter_ffi.rs \
         --dart-output lib/bridge_generated.dart \
-        --c-output ios/Runner/bridge_generated.h \
         --dart-decl-output lib/bridge_definitions.dart \
+        --c-output ios/Runner/bridge_generated.h \
+        --extra-c-output-path macos/Runner \
+        --dart-format-line-length 120 \
         --wasm
-    cp ios/Runner/bridge_generated.h macos/Runner/bridge_generated.h
+    # cp ios/Runner/bridge_generated.h macos/Runner/bridge_generated.h
 
 lint:
     cd native && cargo fmt
@@ -17,7 +19,7 @@ lint:
 clean:
     flutter clean
     cd native && cargo clean
-    
+
 serve *args='':
     flutter pub run flutter_rust_bridge:serve {{args}}
 

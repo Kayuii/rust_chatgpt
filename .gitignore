@@ -32,6 +32,7 @@
 /build/
 
 # Web related
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -46,6 +47,14 @@ app.*.map.json
 native/target
 xcuserdata
 jniLibs
+.fvm
 
 Cargo.lock
 pubspec.lock
+
+**/src/bridge_generated.rs
+**/src/bridge_generated.io.rs
+**/src/bridge_generated.web.rs
+
+# flutter
+**/Runner/bridge_generated.h

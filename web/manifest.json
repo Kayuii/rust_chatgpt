@@ -1,6 +1,6 @@
 {
-    "name": "flutter_rust_bridge_template",
-    "short_name": "flutter_rust_bridge_template",
+    "name": "rust_chatgpt",
+    "short_name": "rust_chatgpt",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

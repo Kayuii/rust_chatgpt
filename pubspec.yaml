@@ -38,7 +38,7 @@ dependencies:
   freezed_annotation: ^2.1.0
   flutter_rust_bridge: ^1.45.0
   meta: ^1.8.0
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.0.1
   path_provider: ^2.0.0
   device_info_plus: ^8.1.0
   external_path: ^1.0.3
